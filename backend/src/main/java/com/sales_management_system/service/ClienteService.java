@@ -42,7 +42,7 @@ public class ClienteService {
     public ClienteDTO findById(String id){
         var uuid = UUID.fromString(id);
         var client = clientRepository.findById(uuid)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "A produtoe não foi encontrada; Verifique o ID"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "A produto não foi encontrada; Verifique o ID"));
         return clienteMap.fromClient(client);
     }
 
@@ -50,7 +50,7 @@ public class ClienteService {
     public void deleteById(String id){
         var uuid = UUID.fromString(id);
         var cliente = clientRepository.findById(uuid)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Cliente nao encontrado; Verifique o ID"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Produto nao encontrado; Verifique o ID"));
         clientRepository.deleteById(uuid);
     }
 
