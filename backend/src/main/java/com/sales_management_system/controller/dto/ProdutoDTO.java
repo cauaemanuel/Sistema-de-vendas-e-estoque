@@ -1,4 +1,7 @@
 package com.sales_management_system.controller.dto;
 
-public record ProdutoDTO() {
+
+import jakarta.validation.constraints.NotBlank;
+
+public record ProdutoDTO(String nome, String cartegoria, Double preco, Integer quantidadeEmEstoque) {
 }
