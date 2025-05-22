@@ -1,9 +1,6 @@
 package com.sales_management_system.security.service;
 
 import com.sales_management_system.Repository.UserRepository;
-import com.sales_management_system.controller.dto.LoginRequestDTO;
-import com.sales_management_system.controller.dto.RegisterRequestDTO;
-import com.sales_management_system.controller.dto.ResponseDTO;
 import com.sales_management_system.entity.User;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;

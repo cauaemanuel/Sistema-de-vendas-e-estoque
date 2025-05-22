@@ -20,7 +20,7 @@ public class ItemVenda {
     private Integer quantidade;//quantidade do produto
 
     @Column(nullable = false)
-    private Double preco_unitario;//preco unitario do produto
+    private Double precoUnitario;//preco unitario do produto
 
     @ManyToOne
     @JoinColumn(name = "venda_id", nullable = false)

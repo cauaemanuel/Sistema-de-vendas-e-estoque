@@ -1,7 +1,7 @@
 package com.sales_management_system.controller;
 
-import com.sales_management_system.controller.dto.LoginRequestDTO;
-import com.sales_management_system.controller.dto.RegisterRequestDTO;
+import com.sales_management_system.security.service.LoginRequestDTO;
+import com.sales_management_system.security.service.RegisterRequestDTO;
 import com.sales_management_system.security.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
