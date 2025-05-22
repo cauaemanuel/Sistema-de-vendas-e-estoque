@@ -40,27 +40,29 @@ public class ProdutoService {
 
     @Transactional
     public ProdutoDTO findById(String id){
-        var uuid = UUID.fromString(id);
-        var produto = produtoRepository.findById(uuid)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Produto não encontrado; Verifique o ID"));
+        var produto = findEntityByid(id);
         return produtoMap.fromProduto(produto);
     }
 
     @Transactional
     public void deleteById(String id){
-        var uuid = UUID.fromString(id);
-        var produto = produtoRepository.findById(uuid)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Produto não encontrado; Verifique o ID"));
-        produtoRepository.deleteById(uuid);
+        var produto = findEntityByid(id);
+        produtoRepository.deleteById(produto.getId());
     }
 
     public ProdutoDTO updateProduto(ProdutoDTO dto, String id){
-        var uuid = UUID.fromString(id);
-        var produto = produtoRepository.findById(uuid)
-                .orElseThrow(
-                        () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Id inválido"));
-
+        var produto = findEntityByid(id);
         var produtoUpdate = produtoMap.updateFromDTO(dto, produto);
         return produtoMap.fromProduto(produtoRepository.save(produtoUpdate));
+    }
+
+    protected Produto findEntityByid(String id){
+        var uuid = UUID.fromString(id);
+        return produtoRepository.findById(uuid)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Produto não encontrado; Verifique o ID"));
+    }
+
+    protected void save (Produto produto) {
+        produtoRepository.save(produto);
     }
 }

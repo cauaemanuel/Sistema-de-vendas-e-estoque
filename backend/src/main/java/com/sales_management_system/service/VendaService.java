@@ -23,19 +23,20 @@ import java.util.UUID;
 @Service
 public class VendaService {
 
-    private ClienteRepository clienteRepository;
-    private ProdutoRepository produtoRepository;
+    private ClienteService clienteService;
+    private ProdutoService produtoService;
     private VendaRepository vendaRepository;
     private ItemVendaRepository itemVendaRepository;
     private ReciboService reciboService;
 
-    public VendaService(ClienteRepository clienteRepository,
-                        ProdutoRepository produtoRepository,
+
+    public VendaService(ClienteService clienteService,
+                        ProdutoService produtoService,
                         VendaRepository vendaRepository,
                         ItemVendaRepository itemVendaRepository,
                         ReciboService reciboService) {
-        this.clienteRepository = clienteRepository;
-        this.produtoRepository = produtoRepository;
+        this.clienteService = clienteService;
+        this.produtoService = produtoService;
         this.vendaRepository = vendaRepository;
         this.itemVendaRepository = itemVendaRepository;
         this.reciboService = reciboService;
@@ -43,10 +44,8 @@ public class VendaService {
 
     @Transactional
     public ReciboDTO realizarVenda(VendaDTO vendaDTO) {
-
-        var clienteId = UUID.fromString(vendaDTO.clienteId());//procurando o cliente pelo id
-        var cliente = clienteRepository.findById(clienteId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Cliente não encontrado"));
+        //Buscando Cliente Pelo Id
+        var cliente = clienteService.findEntityByid(vendaDTO.clienteId());
 
         var venda = new Venda();//criando a venda
         venda.setCliente(cliente);
@@ -57,9 +56,8 @@ public class VendaService {
         var produtos = vendaDTO.produtos();// iniciando logica de produtos e cadastrando venda
         produtos.stream().forEach( p -> {
 
-            var produtoId = UUID.fromString(p.produtoId());//procurando o produto pelo id
-            var produto = produtoRepository.findById(produtoId)
-                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Produto não encontrado"));
+            //Buscando Produto Pelo id
+            var produto = produtoService.findEntityByid(p.produtoId());
 
             if (produto.getQuantidadeEmEstoque() < p.quantidade()) { //verificando se o produto tem estoque suficiente
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Produto com estoque insuficiente");
@@ -74,7 +72,7 @@ public class VendaService {
             itens.add(itemVenda);//adicionando o item na lista de itens da venda
 
             produto.setQuantidadeEmEstoque(produto.getQuantidadeEmEstoque() - p.quantidade());//atualizando o estoque do produto
-            produtoRepository.save(produto);//salvando o produto atualizado
+            produtoService.save(produto);//salvando o produto atualizado
         });
 
         var total = itens.stream()
@@ -86,14 +84,11 @@ public class VendaService {
 
         vendaRepository.save(venda);
         itemVendaRepository.saveAll(itens);//salvando todos os itens da venda
-
         //cria Recibo
         return reciboService.criarRecibo(venda);
-
     }
 
     public ReciboDTO buscarReciboPorIdVenda(String idVenda){
-        //lógica para buscar venda
         var vendaId = UUID.fromString(idVenda);
         var venda = vendaRepository.findById(vendaId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Venda não encontrada"));

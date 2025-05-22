@@ -40,27 +40,25 @@ public class ClienteService {
 
     @Transactional
     public ClienteDTO findById(String id){
-        var uuid = UUID.fromString(id);
-        var client = clientRepository.findById(uuid)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "A produto não foi encontrada; Verifique o ID"));
+        var client = findEntityByid(id);
         return clienteMap.fromClient(client);
     }
 
     @Transactional
     public void deleteById(String id){
-        var uuid = UUID.fromString(id);
-        var cliente = clientRepository.findById(uuid)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Produto nao encontrado; Verifique o ID"));
-        clientRepository.deleteById(uuid);
+        var cliente = findEntityByid(id);
+        clientRepository.deleteById(cliente.getId());
     }
 
     public ClienteDTO updateCliente(ClienteDTO dto, String id){
-        var uuid = UUID.fromString(id);
-        var cliente = clientRepository.findById(uuid)
-                .orElseThrow(
-                        () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Id invalido"));
-
+        var cliente = findEntityByid(id);
         var clienteUpdate = clienteMap.updateFromDTO(dto, cliente);
         return clienteMap.fromClient(clientRepository.save(clienteUpdate));
+    }
+
+    protected Cliente findEntityByid(String id){
+        var uuid = UUID.fromString(id);
+        return clientRepository.findById(uuid)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "A produto não foi encontrada; Verifique o ID"));
     }
 }

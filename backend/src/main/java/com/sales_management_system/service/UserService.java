@@ -40,27 +40,25 @@ public class UserService {
 
     @Transactional
     public UserDTO findById(String id){
-        var uuid = UUID.fromString(id);
-        var user = userRepository.findById(uuid)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado; Verifique o ID"));
+        var user = findEntityByid(id);
         return userMap.fromUser(user);
     }
 
     @Transactional
     public void deleteById(String id){
-        var uuid = UUID.fromString(id);
-        var user = userRepository.findById(uuid)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado; Verifique o ID"));
-        userRepository.deleteById(uuid);
+        var user = findEntityByid(id);
+        userRepository.deleteById(user.getId());
     }
 
     public UserDTO updateUser(UserDTO dto, String id){
-        var uuid = UUID.fromString(id);
-        var user = userRepository.findById(uuid)
-                .orElseThrow(
-                        () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Id inválido"));
-
+        var user = findEntityByid(id);
         var userUpdate = userMap.updateFromDTO(dto, user);
         return userMap.fromUser(userRepository.save(userUpdate));
+    }
+
+    protected User findEntityByid(String id) {
+        var uuid = UUID.fromString(id);
+        return userRepository.findById(uuid)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado; Verifique o ID"));
     }
 }
