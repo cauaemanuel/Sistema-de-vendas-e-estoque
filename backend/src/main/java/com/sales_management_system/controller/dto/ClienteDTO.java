@@ -15,8 +15,8 @@ public record ClienteDTO(
         @Pattern(regexp = "\\d{11}", message = "O CPF deve conter 11 dígitos numéricos.")
         String cpf,
 
-        @NotNull(message = "O telefone é obrigatório.")
-        Integer telefone,
+        @NotBlank(message = "O telefone é obrigatório.")
+        String telefone,
 
         @NotBlank(message = "O e-mail é obrigatório.")
         @Email(message = "O e-mail informado não é válido.")

@@ -1,5 +1,6 @@
 package com.sales_management_system.exception;
 
+import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -32,7 +33,24 @@ public class ExceptionHandlerController {
         String errorMessage = String.join(", ", errors);
         ResponseError responseError = new ResponseError(HttpStatus.BAD_REQUEST, errorMessage);
         return new ResponseEntity<>(responseError, HttpStatus.BAD_REQUEST);
-
     }
 
+    // Tratamento para argumentos inválidos
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<ResponseError> handleIllegalArgumentException(IllegalArgumentException ex) {
+        ResponseError responseError = new ResponseError(HttpStatus.BAD_REQUEST, ex.getMessage());
+        return new ResponseEntity<>(responseError, HttpStatus.BAD_REQUEST);
+    }
+
+    // Tratamento para validação de parâmetros 
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<ResponseError> handleConstraintViolationException(ConstraintViolationException ex) {
+        String errorMessage = ex.getConstraintViolations()
+                .stream()
+                .map(cv -> cv.getPropertyPath() + ": " + cv.getMessage())
+                .collect(Collectors.joining(", "));
+
+        ResponseError responseError = new ResponseError(HttpStatus.BAD_REQUEST, errorMessage);
+        return new ResponseEntity<>(responseError, HttpStatus.BAD_REQUEST);
+    }
 }

@@ -26,7 +26,7 @@ public class Cliente {
     private String cpf;
 
     @Column(nullable = false)
-    private Integer telefone;
+    private String telefone;
 
     @Column(nullable = false)
     private String email;
@@ -35,7 +35,7 @@ public class Cliente {
     @Column(nullable = false)
     private List<Venda> compras = new ArrayList<>();
 
-    public Cliente(String nome, String cpf, Integer telefone, String email) {
+    public Cliente(String nome, String cpf, String telefone, String email) {
         this.nome = nome;
         this.cpf = cpf;
         this.telefone = telefone;
